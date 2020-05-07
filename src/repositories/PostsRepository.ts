@@ -8,6 +8,8 @@ interface CreatePostDTO {
   description: string;
 
   text: string;
+
+  date: Date;
 }
 
 class PostsRepository {
@@ -21,8 +23,14 @@ class PostsRepository {
     return this.posts;
   }
 
-  public create({ title, image, description, text }: CreatePostDTO): Post {
-    const post = new Post({ title, image, description, text });
+  public create({
+    title,
+    image,
+    description,
+    text,
+    date,
+  }: CreatePostDTO): Post {
+    const post = new Post({ title, image, description, text, date });
 
     this.posts.push(post);
 

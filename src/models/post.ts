@@ -11,12 +11,15 @@ class Posts {
 
   text: string;
 
-  constructor({ title, image, description, text }: Omit<Posts, 'id'>) {
+  date: Date;
+
+  constructor({ title, image, description, text, date }: Omit<Posts, 'id'>) {
     this.id = uuid();
     this.title = title;
     this.image = image;
     this.description = description;
     this.text = text;
+    this.date = date;
   }
 }
 
