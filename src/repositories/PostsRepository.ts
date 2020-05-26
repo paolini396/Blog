@@ -1,40 +1,20 @@
-import Post from '../models/post';
+import { EntityRepository, Repository } from 'typeorm';
 
-interface CreatePostDTO {
+import Post from '../models/Post';
+
+interface Posts {
   title: string;
-
   image: string;
-
   description: string;
-
   text: string;
-
-  date: Date;
 }
 
-class PostsRepository {
-  private posts: Post[];
+@EntityRepository(Post)
+class PostsRepository extends Repository<Post> {
+  public async getPosts(): Promise<Posts[]> {
+    const posts = await this.find();
 
-  constructor() {
-    this.posts = [];
-  }
-
-  public all(): Post[] {
-    return this.posts;
-  }
-
-  public create({
-    title,
-    image,
-    description,
-    text,
-    date,
-  }: CreatePostDTO): Post {
-    const post = new Post({ title, image, description, text, date });
-
-    this.posts.push(post);
-
-    return post;
+    return posts;
   }
 }
 

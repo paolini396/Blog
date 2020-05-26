@@ -1,32 +1,30 @@
 import { Router } from 'express';
-import { parseISO } from 'date-fns';
+import { getCustomRepository } from 'typeorm';
 
 import PostsRepository from '../repositories/PostsRepository';
 import CreatePostService from '../services/CreatePostsService';
 
 const postsRouter = Router();
-const postsRepository = new PostsRepository();
 
-postsRouter.get('/', (request, response) => {
-  const posts = postsRepository.all();
+postsRouter.get('/', async (request, response) => {
+  const postsRepository = getCustomRepository(PostsRepository);
+  const posts = await postsRepository.find();
 
   return response.json(posts);
 });
 
-postsRouter.post('/', (request, response) => {
+postsRouter.post('/', async (request, response) => {
   try {
-    const { title, image, description, text, date } = request.body;
+    const { author_id, title, image, description, text } = request.body;
 
-    const parsedDate = parseISO(date);
+    const createPost = new CreatePostService();
 
-    const createPost = new CreatePostService(postsRepository);
-
-    const post = createPost.execute({
+    const post = await createPost.execute({
+      author_id,
       title,
       image,
       description,
       text,
-      date: parsedDate,
     });
 
     return response.json(post);

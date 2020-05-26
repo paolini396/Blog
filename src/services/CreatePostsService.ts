@@ -1,37 +1,35 @@
-import { startOfHour } from 'date-fns';
+import { getCustomRepository } from 'typeorm';
 
-import Post from '../models/post';
+import Post from '../models/Post';
 import PostsRepository from '../repositories/PostsRepository';
 
 interface RequestDTO {
+  author_id: string;
   title: string;
-
   image: string;
-
   description: string;
-
   text: string;
-
-  date: Date;
 }
 
 class CreatePostServie {
-  private postsRepository: PostsRepository;
+  public async execute({
+    author_id,
+    title,
+    image,
+    description,
+    text,
+  }: RequestDTO): Promise<Post> {
+    const postRepository = getCustomRepository(PostsRepository);
 
-  constructor(postsRepository: PostsRepository) {
-    this.postsRepository = postsRepository;
-  }
-
-  public execute({ title, image, description, text, date }: RequestDTO): Post {
-    const postDate = startOfHour(date);
-
-    const post = this.postsRepository.create({
+    const post = postRepository.create({
+      author_id,
       title,
       image,
       description,
       text,
-      date: postDate,
     });
+
+    await postRepository.save(post);
 
     return post;
   }
